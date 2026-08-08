@@ -43,8 +43,8 @@ Follow these steps to set up and run the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
-cd <repository-folder>
+git clone https://github.com/mahmudul-Hasan-2/Assignment-backend.git
+cd Assignment-backend
 ```
 
 ### 2. Install Dependencies
