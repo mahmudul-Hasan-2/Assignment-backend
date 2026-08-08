@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 1. Enums রিকোয়ারমেন্ট পূরণের জন্য
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum ProductStatus {
+  AVAILABLE
+  OUT_OF_STOCK
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(CUSTOMER)
+  isDeleted Boolean  @default(false) // Soft Delete support
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  products  Product[]
+  isDeleted Boolean   @default(false) // Soft Delete support
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id          String        @id @default(uuid())
+  title       String
+  price       Float
+  description String?
+  status      ProductStatus @default(AVAILABLE) // Enum support
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  reviews     Review[]
+  isDeleted   Boolean       @default(false) // Soft Delete support
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("products")
+}
+
+// 2. চতুর্থ সার্ভিস (Review Service) রিকোয়ারমেন্ট পূরণের জন্য
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  isDeleted Boolean  @default(false) // Soft Delete support
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
+}
