@@ -6,10 +6,7 @@ export const createReview = async (
   res: Response,
 ): Promise<void> => {
   try {
-    // Get authenticated user id from auth middleware
     const userId = (req as any).user?.id || (req as any).user?.userId;
-
-    console.log("userId", userId);
 
     if (!userId) {
       res.status(401).json({
