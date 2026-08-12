@@ -12,8 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllReviews = exports.createReview = void 0;
 const review_service_1 = require("./review.service");
 const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
-        const result = yield (0, review_service_1.createReviewIntoDB)(req.body);
+        // Get authenticated user id from auth middleware
+        const userId = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || ((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId);
+        console.log("userId", userId);
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized! Please login to submit a review.",
+            });
+            return;
+        }
+        const { productId, rating, comment } = req.body;
+        if (!productId || !rating) {
+            res.status(400).json({
+                success: false,
+                message: "productId and rating are required.",
+            });
+            return;
+        }
+        const result = yield (0, review_service_1.createReviewIntoDB)(userId, {
+            productId,
+            rating: Number(rating),
+            comment,
+        });
         res.status(201).json({
             success: true,
             message: "Review created successfully!",
@@ -21,9 +44,10 @@ const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
+        console.error("Create Review Error:", error);
         res.status(400).json({
             success: false,
-            message: error.message || "Something went wrong!",
+            message: error.message || "Something went wrong while creating review!",
         });
     }
 });

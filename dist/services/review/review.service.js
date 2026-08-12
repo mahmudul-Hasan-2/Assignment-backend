@@ -14,9 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllReviewsFromDB = exports.createReviewIntoDB = void 0;
 const prisma_1 = __importDefault(require("../../lib/prisma"));
-const createReviewIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+const createReviewIntoDB = (userId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Service received userId →", userId); // temporary log
     const result = yield prisma_1.default.review.create({
-        data: payload,
+        data: {
+            rating: payload.rating,
+            comment: payload.comment,
+            userId: userId, // using scalar (simpler)
+            productId: payload.productId,
+        },
         include: {
             user: true,
             product: true,
@@ -31,6 +37,9 @@ const getAllReviewsFromDB = () => __awaiter(void 0, void 0, void 0, function* ()
         include: {
             user: true,
             product: true,
+        },
+        orderBy: {
+            createdAt: "desc",
         },
     });
     return result;
