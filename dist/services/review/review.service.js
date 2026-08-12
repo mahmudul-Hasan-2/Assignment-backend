@@ -15,12 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllReviewsFromDB = exports.createReviewIntoDB = void 0;
 const prisma_1 = __importDefault(require("../../lib/prisma"));
 const createReviewIntoDB = (userId, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Service received userId →", userId); // temporary log
     const result = yield prisma_1.default.review.create({
         data: {
             rating: payload.rating,
             comment: payload.comment,
-            userId: userId, // using scalar (simpler)
+            userId: userId,
             productId: payload.productId,
         },
         include: {

@@ -14,9 +14,7 @@ const review_service_1 = require("./review.service");
 const createReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
-        // Get authenticated user id from auth middleware
         const userId = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || ((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId);
-        console.log("userId", userId);
         if (!userId) {
             res.status(401).json({
                 success: false,
